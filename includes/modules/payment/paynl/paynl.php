@@ -399,20 +399,8 @@ class paynl {
             $paynlService->addProduct($product['id'], $product['name'], round($product['final_price'] * 100), $product['qty']);
         }
 
-
         //add ship cost
         $paynlService->addProduct('shipcost', $order->info['shipping_method'], round($order->info['shipping_cost'] * 100), 1);
-
-//    //add taxe
-        $countTaxes = 1;
-        foreach ($order->info['tax_groups'] as $tax_name => $tax_cost) {
-            if ($tax_cost > 0)
-                $paynlService->addProduct($countTaxes, $tax_name, round($tax_cost * 100), 1);
-            $countTaxes++;
-        }
-
-//    //for support 
-
 
         try {
             $result = $paynlService->doRequest();
