@@ -54,6 +54,8 @@ if (isAlreadyPAID($transactionId) && !$isExchange) {
     global $cart;
     $cart->reset(true);
 
+    paynlSendConfirmEmail($orderId);
+
     header('Location: ' . $url_success);
     die();
 }
@@ -65,6 +67,7 @@ switch ($state) {
         if (!$isExchange) {
             global $cart;
             $cart->reset(true);
+            paynlSendConfirmEmail($orderId);
             header('Location: ' . $url_success);
             die();
         }
@@ -81,6 +84,7 @@ switch ($state) {
         $cart->reset(true);
 
         if (!$isExchange) {
+            paynlSendConfirmEmail($orderId);
             header('Location: ' . $url_success);
         } else {
             echo "TRUE|PAID";
@@ -135,9 +139,20 @@ function updatePaynlTransaction($transactionId, $status)
     tep_db_query("UPDATE paynl_transaction SET status = '" . $status . "' , last_update= now() WHERE transaction_id ='" . $transactionId . "'");
 }
 
+function paynlSendConfirmEmail($orderId)
+{
+    global $method_code, $insert_id;
+    $insert_id = $orderId;
+
+    require(DIR_WS_CLASSES . 'payment.php');
+    $payment_modules = new payment($method_code);
+
+    $payment_modules->after_process();
+}
+
 function updateOrderStatus($method, $orderId)
 {
-    global $insert_id, $method_code;
+    global $insert_id;
 
     $insert_id = $orderId;
 
@@ -152,9 +167,4 @@ function updateOrderStatus($method, $orderId)
         'comments' => 'Paynl Transaction [VERIFIED]');
 
     tep_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
-
-    require(DIR_WS_CLASSES . 'payment.php');
-    $payment_modules = new payment($method_code);
-
-    $payment_modules->after_process();
 }
