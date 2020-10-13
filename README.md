@@ -15,7 +15,7 @@ With the PAY. plugin you can easily add different payment methods to your osComm
 
 # Installation
 #### Installing
-Download the latest .zip from https://github.com/paynl/opencart-plugin/releases. <br/>
+Download the latest .zip from https://github.com/paynl/oscommerce-plugin/releases. <br/>
 Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
 
 ##### Setup
@@ -28,7 +28,7 @@ Unzip the file and upload everything from the PAY. plugin to the webroot of your
 #### Update instructions
 
 Updating the plugin works the same as the installation of the plugin.
-Download the latest .zip from https://github.com/paynl/opencart-plugin/releases.
+Download the latest .zip from https://github.com/paynl/oscommerce-plugin/releases
 Unzip the file and upload everything from the PAY. plugin to the webroot of your server.
 
 # Usage
