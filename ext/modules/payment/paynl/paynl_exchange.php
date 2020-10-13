@@ -12,7 +12,6 @@
 
 chdir('../../../../');
 require('includes/application_top.php');
-require(DIR_WS_CLASSES . 'order.php');
 
 require_once(DIR_WS_MODULES . '/payment/paynl/Pay/Autoload.php');
 
@@ -122,6 +121,7 @@ function deleteOrder($orderId)
  */
 function updateStock($orderId)
 {
+    require_once(DIR_WS_CLASSES . 'order.php');
     $order = new order($orderId);
 
     $iNumberOfProducts = sizeof($order->products);
