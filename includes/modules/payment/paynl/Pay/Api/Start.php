@@ -26,8 +26,17 @@ class Pay_Api_Start extends Pay_Api {
     private $_object;
     private $_domainId;
     private $_transferData;
-    
+    private $_orderNumber;
+
     private $_products = array();
+
+    /**
+     * @param $orderNumber
+     */
+    public function setOrderNumber($orderNumber)
+    {
+        $this->_orderNumber = $orderNumber;
+    }
 
     public function setCurrency($currency){
         $this->_currency = strtoupper($currency);
@@ -48,18 +57,19 @@ class Pay_Api_Start extends Pay_Api {
     public function setTransferData($transferData){
         $this->_transferData = $transferData;
     }
+
     /**
      * Add a product to an order
      * Attention! This is purely an adminstrative option, the amount of the order is not modified.
-     * 
-     * @param string $id
-     * @param string $description
-     * @param int $price
-     * @param int $quantity
-     * @param int $vatPercentage
+     * @param $id
+     * @param $description
+     * @param $price
+     * @param $quantity
+     * @param string $vatPercentage
+     * @param string $productType
      * @throws Pay_Exception
      */
-    public function addProduct($id, $description, $price, $quantity, $vatPercentage = 'H') {
+    public function addProduct($id, $description, $price, $quantity, $vatPercentage = 'H', $productType = 'ARTICLE') {
         if (!is_numeric($price)) {
             throw new Pay_Exception('Price moet numeriek zijn', 1);
         }
@@ -78,6 +88,7 @@ class Pay_Api_Start extends Pay_Api {
             'price' => $price,
             'quantity' => $quantity,
             'vatCode' => $vatPercentage,
+            'productType' => $productType
         );
         $this->_products[] = $arrProduct;
     }
@@ -297,7 +308,11 @@ class Pay_Api_Start extends Pay_Api {
         if(!empty($this->_transferData)){
             $data['statsData']['transferData'] = $this->_transferData;
         }
-        
+        if (!empty($this->_orderNumber)) {
+            $data['transaction']['orderNumber'] = $this->_orderNumber;
+        }
+
+
         return $data;
     }
 

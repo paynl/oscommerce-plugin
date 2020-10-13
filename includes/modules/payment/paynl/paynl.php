@@ -382,6 +382,8 @@ class paynl
         $paynlService->setDescription($insert_id);
         $paynlService->setExtra1($insert_id);
         $paynlService->setExtra2($customer_id);
+        $paynlService->setObject('oscommerce 1.0.4');
+        $paynlService->setOrderNumber($insert_id);
 
 
         $b_address = $this->splitAddress(trim($order->billing['street_address']));
@@ -389,7 +391,7 @@ class paynl
 
         $paynlService->setEnduser(
             array('language' => $order_info['lang_code'],
-                'initials' => substr($order->delivery['firstname'], 0, 1),
+                'initials' => $order->delivery['firstname'],
                 'lastName' => substr($order->delivery['lastname'], 0, 50),
                 'phoneNumber' => $order->customer['telephone'],
                 'emailAddress' => $order->customer['email_address'],
@@ -398,7 +400,8 @@ class paynl
                     'zipCode' => $order->delivery['postcode'],
                     'city' => $order->delivery['city'],
                     'countryCode' => $order->delivery['country']['iso_code_2']),
-                'invoiceAddress' => array('initials' => substr($order->billing['firstname'], 0, 1),
+                'invoiceAddress' => array(
+                    'initials' => $order->billing['firstname'],
                     'lastname' => substr($order->billing['lastname'], 0, 50),
                     'streetName' => $d_address[0],
                     'streetNumber' => substr($d_address[1], 0, 4),
@@ -412,8 +415,8 @@ class paynl
             $paynlService->addProduct($product['id'], $product['name'], round($product['final_price'] * 100), $product['qty']);
         }
 
-        //add ship cost
-        $paynlService->addProduct('shipcost', $order->info['shipping_method'], round($order->info['shipping_cost'] * 100), 1);
+        # Shipping costs
+        $paynlService->addProduct('shipcost', $order->info['shipping_method'], round($order->info['shipping_cost'] * 100), 1, 'H', 'SHIPPING');
 
         try {
             $result = $paynlService->doRequest();
