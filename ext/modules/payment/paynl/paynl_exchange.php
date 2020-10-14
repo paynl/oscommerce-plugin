@@ -13,7 +13,6 @@
 chdir('../../../../');
 require('includes/application_top.php');
 
-
 require_once(DIR_WS_MODULES . '/payment/paynl/Pay/Autoload.php');
 
 $transactionId = null;
@@ -104,6 +103,7 @@ switch ($state) {
 
 function deleteOrder($orderId)
 {
+    updateStock($orderId);
 
     tep_db_query('delete from ' . TABLE_ORDERS . ' where orders_id = "' . (int)$orderId . '"');
     tep_db_query('delete from ' . TABLE_ORDERS_TOTAL . ' where orders_id = "' . (int)$orderId . '"');
@@ -112,7 +112,51 @@ function deleteOrder($orderId)
     tep_db_query('delete from ' . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . ' where orders_id = "' . (int)$orderId . '"');
     tep_db_query('delete from ' . TABLE_ORDERS_PRODUCTS_DOWNLOAD . ' where orders_id = "' . (int)$orderId . '"');
 
+}
 
+/**
+ * Update stock after cancellation
+ *
+ * @param $orderId
+ */
+function updateStock($orderId)
+{
+    require_once(DIR_WS_CLASSES . 'order.php');
+    $order = new order($orderId);
+
+    $iNumberOfProducts = sizeof($order->products);
+
+    if (STOCK_LIMITED == 'true') {
+        for ($i = 0, $n = $iNumberOfProducts; $i < $n; $i++) {
+            $productId = tep_get_prid($order->products[$i]['id']);
+
+            if (DOWNLOAD_ENABLED == 'true') {
+                $stock_query_raw = "SELECT products_quantity, pad.products_attributes_filename ";
+                $stock_query_raw .= "FROM " . TABLE_PRODUCTS . " p ";
+                $stock_query_raw .= "LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES . " pa ON p.products_id=pa.products_id ";
+                $stock_query_raw .= "LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad ON pa.products_attributes_id=pad.products_attributes_id ";
+                $stock_query_raw .= "WHERE p.products_id = '" . $productId . "'";
+
+                // Will work with only one option for downloadable products
+                // otherwise, we have to build the query dynamically with a loop
+                $products_attributes = (isset($order->products[$i]['attributes'])) ? $order->products[$i]['attributes'] : '';
+
+                if (is_array($products_attributes)) {
+                    $stock_query_raw .= " AND pa.options_id = '" . (int)$products_attributes[0]['option_id'] . "' AND pa.options_values_id = '" . (int)$products_attributes[0]['value_id'] . "'";
+                }
+                $stock_query = tep_db_query($stock_query_raw);
+
+            } else {
+                $stock_query = tep_db_query("select products_quantity from " . TABLE_PRODUCTS . " where products_id = '" . $productId . "'");
+            }
+
+            $stock_values = tep_db_fetch_array($stock_query);
+
+            $currentStock = isset($stock_values['products_quantity']) ? (int)$stock_values['products_quantity'] : 0;
+
+            tep_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_quantity = '" . ($currentStock + 1) . "' WHERE products_id = '" . $productId . "'");
+        }
+    }
 }
 
 function isAlreadyPAID($transactionId)
