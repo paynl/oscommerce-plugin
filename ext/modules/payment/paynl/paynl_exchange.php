@@ -152,9 +152,10 @@ function updateStock($orderId)
 
             $stock_values = tep_db_fetch_array($stock_query);
 
+            $qty = (int)$order->products[$i]['qty'];
             $currentStock = isset($stock_values['products_quantity']) ? (int)$stock_values['products_quantity'] : 0;
 
-            tep_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_quantity = '" . ($currentStock + 1) . "' WHERE products_id = '" . $productId . "'");
+            tep_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_quantity = '" . ($currentStock + $qty) . "' WHERE products_id = '" . $productId . "'");
         }
     }
 }
