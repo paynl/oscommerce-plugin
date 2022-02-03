@@ -385,29 +385,33 @@ class paynl
         $paynlService->setObject('oscommerce 1.0.4');
         $paynlService->setOrderNumber($insert_id);
 
-
         $b_address = $this->splitAddress(trim($order->billing['street_address']));
         $d_address = $this->splitAddress(trim($order->delivery['street_address']));
 
         $paynlService->setEnduser(
-            array('language' => $order_info['lang_code'],
+            array(
+                'language' => $order_info['lang_code'],
                 'initials' => $order->delivery['firstname'],
                 'lastName' => substr($order->delivery['lastname'], 0, 50),
                 'phoneNumber' => $order->customer['telephone'],
                 'emailAddress' => $order->customer['email_address'],
-                'address' => array('streetName' => $d_address[0],
+                'address' => array(
+                    'streetName' => $d_address[0],
                     'streetNumber' => substr($d_address[1], 0, 4),
                     'zipCode' => $order->delivery['postcode'],
                     'city' => $order->delivery['city'],
-                    'countryCode' => $order->delivery['country']['iso_code_2']),
+                    'countryCode' => $order->delivery['country']['iso_code_2']
+                ),
                 'invoiceAddress' => array(
                     'initials' => $order->billing['firstname'],
                     'lastname' => substr($order->billing['lastname'], 0, 50),
-                    'streetName' => $d_address[0],
-                    'streetNumber' => substr($d_address[1], 0, 4),
+                    'streetName' => $b_address[0],
+                    'streetNumber' => substr($b_address[1], 0, 4),
                     'zipCode' => $order->billing['postcode'],
                     'city' => $order->billing['city'],
-                    'countryCode' => $order->billing['country']['iso_code_2']))
+                    'countryCode' => $order->billing['country']['iso_code_2']
+                )
+            )
         );
 
         //add products
