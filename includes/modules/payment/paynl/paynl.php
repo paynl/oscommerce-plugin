@@ -396,8 +396,8 @@ class paynl
                 'phoneNumber' => $order->customer['telephone'],
                 'emailAddress' => $order->customer['email_address'],
                 'address' => array(
-                    'streetName' => $d_address[0],
-                    'streetNumber' => substr($d_address[1], 0, 4),
+                    'streetName' => (!empty($d_address[0])) ? $d_address[0] : '',
+                    'streetNumber' => substr(((!empty($d_address[1])) ? $d_address[1] : ''), 0, 4),
                     'zipCode' => $order->delivery['postcode'],
                     'city' => $order->delivery['city'],
                     'countryCode' => $order->delivery['country']['iso_code_2']
@@ -405,8 +405,8 @@ class paynl
                 'invoiceAddress' => array(
                     'initials' => $order->billing['firstname'],
                     'lastname' => substr($order->billing['lastname'], 0, 50),
-                    'streetName' => $b_address[0],
-                    'streetNumber' => substr($b_address[1], 0, 4),
+                    'streetName' => (!empty($b_address[0])) ? $b_address[0] : '',
+                    'streetNumber' => substr(((!empty($b_address[1])) ? $b_address[1] : ''), 0, 4),
                     'zipCode' => $order->billing['postcode'],
                     'city' => $order->billing['city'],
                     'countryCode' => $order->billing['country']['iso_code_2']
