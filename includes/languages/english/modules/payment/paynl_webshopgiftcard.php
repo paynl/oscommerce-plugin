@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-  define('MODULE_PAYMENT_PAYNL_WEBSHOPGIFTCARD_TEXT_TITLE', 'Pay.nl webshopgiftcard');
+  define('MODULE_PAYMENT_PAYNL_WEBSHOPGIFTCARD_TEXT_TITLE', 'Pay. Webshopgiftcard');
   define('MODULE_PAYMENT_PAYNL_WEBSHOPGIFTCARD_TEXT_PUBLIC_TITLE', 'Webshopgiftcard');
   define('MODULE_PAYMENT_PAYNL_WEBSHOPGIFTCARD_TEXT_DESCRIPTION', '<img src="images/icon_info.gif" border="0" />&nbsp;<a href="http://library.oscommerce.com/Package&en&paynl&oscom23" target="_blank" style="text-decoration: underline; font-weight: bold;">View Online Documentation</a><br /><br /><img src="images/icon_popup.gif" border="0">&nbsp;<a href="https://www.pay.nl/registreren" target="_blank" style="text-decoration: underline; font-weight: bold;">Visit Pay.nl Website</a>&nbsp;<a href="javascript:toggleDivBlock(\'anetInfo\');">(info)</a><span id="anetInfo" style="display: none;"><br /><i></i></span>');
 
