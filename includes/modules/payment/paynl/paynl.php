@@ -382,7 +382,7 @@ class paynl
         $paynlService->setDescription($insert_id);
         $paynlService->setExtra1($insert_id);
         $paynlService->setExtra2($customer_id);
-        $paynlService->setObject('oscommerce 1.2.0');
+        $paynlService->setObject('oscommerce 1.2.1');
         $paynlService->setOrderNumber($insert_id);
 
         $b_address = $this->splitAddress(trim($order->billing['street_address']));
